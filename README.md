@@ -1,6 +1,6 @@
 # Get injected code
 
-Python version of [Get-InjectedThread.ps1](https://gist.github.com/jaredcatkinson/23905d34537ce4b5b1818c3e6405c1d2). This script is also looks for any memory regions in user space processes with RWX permissions. Written 2 years ago so don't judge :)
+Python version of [Get-InjectedThread.ps1](https://gist.github.com/jaredcatkinson/23905d34537ce4b5b1818c3e6405c1d2). This script also looks for any memory regions in user space processes with RWX permissions. Written 2 years ago so don't judge :)
 
 Support python 3.6 and above.
 
