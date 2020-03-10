@@ -1,6 +1,7 @@
 import json
 import traceback
 import os
+import click
 import psutil
 from base64 import b64encode
 from utils import adjust_privileges, get_loaded_modules, get_thread_module_from_addr
@@ -17,6 +18,8 @@ from winapi.kernel32 import PAGE_EXECUTE_READWRITE, CreateToolhelp32Snapshot, Th
 
 
 processes = {p.pid: p for p in psutil.process_iter() if p != os.getpid()}
+
+
 
 def get_injected_threads():
     """
@@ -109,10 +112,12 @@ def get_injected_threads():
             continue
         analyzed_threads += 1
 
-    return {"injected_threads": injected_threads_list,
-            "skipped_threads_access_denied": skipped_threads_access_denied,
-            "skipped_threads_exceptions": skipped_threads_exceptions,
-            "analyzed_threads": analyzed_threads}
+    return {"injected_threads":
+                {'injected_threads': injected_threads_list,
+                "skipped_threads_access_denied": skipped_threads_access_denied,
+                "skipped_threads_exceptions": skipped_threads_exceptions,
+                "analyzed_threads": analyzed_threads}
+            }
 
 
 def get_rwx_memory_regions():
@@ -174,17 +179,24 @@ def get_rwx_memory_regions():
                 skipped_memory_regions.append(f'process: {processes[pid].name()}; addr: {proc_min_address}')
             proc_min_address += memory_basic_info.RegionSize
 
-    return {'rwx_memory_regions': rwx_memory_regions,
-            'skipped_memory_regions': skipped_memory_regions
+    return {'rwx_memory_regions':
+                {'rwx_memory_regions': rwx_memory_regions,
+                'skipped_memory_regions': skipped_memory_regions
+                }
             }
 
-if __name__ == "__main__":
+@click.command()
+@click.option('--output', default='injected_code.json', help='Output filename.')
+def main(output):
     adjust_privileges()  # enable seDebugPrivilege
+    injected_code = {}
+    injected_code.update(get_injected_threads())
+    injected_code.update(get_rwx_memory_regions())
 
-    injected_threads = get_injected_threads()
-    rwx_regions = get_rwx_memory_regions()
+    with open(output, "w") as outfd:
+        json.dump(injected_code, outfd)
 
-    with open("injected_threads.json", "w") as outfd:
-        json.dump(injected_threads, outfd)
-    with open("rwx_memory_regions.json", "w") as outfd:
-        json.dump(rwx_regions, outfd)
+
+if __name__ == "__main__":
+    main()
+

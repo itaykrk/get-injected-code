@@ -8,7 +8,8 @@ Support python 3.6 and above.
 
 `python get-injected_code.py`
 
-Outputs two json files `injected_threads.json` for injected threads and `rwx_memory_regions.json` memory regions with RWX permissions.
+Outputs one json file `injected_code.json` with the injected threads and suspicious memory regions information.
+
 
 # Credits
 

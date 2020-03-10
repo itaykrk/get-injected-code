@@ -1,10 +1,9 @@
 from ctypes import WinError
-from constants import LESS_SUSPICIOUS_PROCESSES
 from winapi.advapi32 import TOKEN_ADJUST_PRIVILEGES, TOKEN_QUERY, OpenProcessToken, LookupPrivilegeValue, \
     SE_PRIVILEGE_ENABLED, AdjustTokenPrivileges
-from winapi.kernel32 import CreateToolhelp32Snapshot, TH32CS_SNAPMODULE, Module32First, Module32Next, \
-    PAGE_EXECUTE_READWRITE
+from winapi.kernel32 import CreateToolhelp32Snapshot, TH32CS_SNAPMODULE, Module32First, Module32Next
 from winapi.version import GetCurrentProcess
+
 
 
 def adjust_privileges():
